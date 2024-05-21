@@ -1,0 +1,76 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  datasource:
+    url: ${RDS_URL}
+    username: root
+    password: ${RDS_PWD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    driver-class-name: org.mariadb.jdbc.Driver
+  application:
+    name: eut
+
+  output:
+    ansi:
+      enabled: always #콘솔 색상
+
+  thymeleaf:
+    prefix: classpath:templates/
+    suffix: .html
+    cache: false
+
+  jpa.hibernate:
+    naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
+
+  security:
+    user:
+      name: user
+      password: 1234
+  servlet:
+    multipart:
+      max-file-size: 256MB
+      max-request-size: 256MB
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: ${BUCKET_NAME}
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}
+      stack:
+        auto: false
+
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 60m
+  tomcat:
+    remoteip:
+      remote-ip-header: "x-real-ip"
+      protocol-header: "x-forwarded-proto"
+logging:
+  level:
+    root: INFO
+    org:
+      springframework.web: DEBUG
+      springframework.security: DEBUG
+    com:
+      fasterxml.jackson: DEBUG
+
+  file:
+    name: ${spring.application.name}
+    path: ./logs
+jwt:
+  secret:
+    key: ${JWT_KEY}
