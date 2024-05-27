@@ -1,5 +1,6 @@
 package taba.team4.eut.config;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -8,6 +9,13 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@OpenAPIDefinition(
+        info = @io.swagger.v3.oas.annotations.info.Info(
+                title = "Eut API docs",
+                description = "Description",
+                version = "v1"
+        )
+)
 @Configuration
 public class SwaggerConfig {
     @Bean
@@ -28,6 +36,6 @@ public class SwaggerConfig {
     }
 
     private Info apiInfo() {
-        return new Info().title("BomMeong API").description("BomMeong API Docs with Swagger UI").version("1.0.0");
+        return new Info().title("Eut API").description("Eut API Docs with Swagger UI").version("1.0.0");
     }
 }

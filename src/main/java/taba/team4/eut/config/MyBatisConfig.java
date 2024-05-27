@@ -10,14 +10,14 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(value= {"com.example.bommeong"})
+@MapperScan(value= {"taba.team4.eut"})
 public class MyBatisConfig {
     @Bean(name="sqlSessionFactory")
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception{
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
 
-        sessionFactory.setTypeAliasesPackage("com.example.bommeong");
+        sessionFactory.setTypeAliasesPackage("taba.team4.eut");
         sessionFactory.setConfigLocation(new PathMatchingResourcePatternResolver().getResource("classpath:mybatis-config.xml"));
         sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:**/mapper/*.xml"));
 

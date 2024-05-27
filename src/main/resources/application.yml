@@ -1,7 +1,11 @@
 spring:
+  application:
+    name: eut
+  main:
+    allow-bean-definition-overriding: true
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -11,10 +15,9 @@ spring:
     url: ${RDS_URL}
     username: root
     password: ${RDS_PWD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  #    driver-class-name: org.mariadb.jdbc.Driver
-  application:
-    name: eut
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
+
 
   output:
     ansi:
@@ -30,9 +33,9 @@ spring:
     naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
 
   security:
-    user:
-      name: user
-      password: 1234
+#    user:
+#      name: user
+#      password: 1234
   servlet:
     multipart:
       max-file-size: 256MB
@@ -49,6 +52,10 @@ cloud:
       secret-key: ${SECRET_KEY}
       stack:
         auto: false
+
+driver:
+  chrome:
+    driver_path: "./chrome"
 
 server:
   port: 8080
@@ -73,4 +80,24 @@ logging:
     path: ./logs
 jwt:
   secret:
+    expiration_time: 86400000 # 1day
     key: ${JWT_KEY}
+
+springdoc:
+  swagger-ui:
+    groups-order: desc
+    tags-sorter: alpha
+    operations-sorter: method
+    disable-swagger-default-url: true
+    display-request-duration: true
+    default-models-expand-depth: 2
+    default-model-expand-depth: 2
+  api-docs:
+    path: /api-docs
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  writer-with-default-pretty-printer: true
+  model-and-view-allowed: true
+  paths-to-match:
+    - /api/v1/**
