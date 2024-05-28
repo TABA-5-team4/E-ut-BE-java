@@ -1,16 +1,22 @@
 package taba.team4.eut.config;
 
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -21,6 +27,7 @@ import taba.team4.eut.jwt.JWTFilter;
 import taba.team4.eut.jwt.JWTUtil;
 import taba.team4.eut.jwt.LoginFilter;
 
+import java.io.IOException;
 import java.util.Collections;
 
 @Configuration
@@ -105,6 +112,26 @@ public class SecurityConfig {
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(new AccessDeniedHandler() {
+                            @Override
+                            public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+                                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                                response.setCharacterEncoding("utf-8");
+                                response.setContentType("text/html; charset=UTF-8");
+                                response.getWriter().write("권한이 없는 사용자입니다.");
+                                }
+                             })
+                        .authenticationEntryPoint(new AuthenticationEntryPoint() {
+                            @Override
+                            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                response.setCharacterEncoding("utf-8");
+                                response.setContentType("text/html; charset=UTF-8");
+                                response.getWriter().write("인증되지 않은 사용자입니다.");
+                            }
+                        }));
 
         return http.build();
     }
