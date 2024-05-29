@@ -10,12 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import taba.team4.eut.biz.user.dto.LoginResponseDto;
 import taba.team4.eut.biz.user.dto.TokenDto;
-import taba.team4.eut.biz.user.dto.UserDto;
 import taba.team4.eut.biz.user.entity.RefreshEntity;
 import taba.team4.eut.biz.user.repository.RefreshRepository;
-import taba.team4.eut.biz.user.service.ReissueService;
+import taba.team4.eut.biz.user.service.TokenService;
 import taba.team4.eut.common.controller.BaseApiController;
 import taba.team4.eut.common.controller.BaseApiDto;
 import taba.team4.eut.jwt.JWTUtil;
@@ -24,24 +22,35 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/api/v1")
-public class ReissueController extends BaseApiController<BaseApiDto<?>> {
+public class TokenController extends BaseApiController<BaseApiDto<?>> {
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
-    private final ReissueService reissueService;
+    private final TokenService tokenService;
 
-    public ReissueController(JWTUtil jwtUtil, RefreshRepository refreshRepository, ReissueService reissueService) {
+    public TokenController(JWTUtil jwtUtil, RefreshRepository refreshRepository, TokenService tokenService) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
-        this.reissueService = reissueService;
+        this.tokenService = tokenService;
     }
 
     @PostMapping("/reissue")
     public ResponseEntity<BaseApiDto<?>> reissue(@RequestBody TokenDto tokenDto) {
         try {
-            TokenDto responseDto = reissueService.reissue(tokenDto);
+            TokenDto responseDto = tokenService.reissue(tokenDto);
             return super.ok(new BaseApiDto<>(responseDto));
         } catch (Exception e) {
             return super.fail(BaseApiDto.newBaseApiDto(), "9999", "재발급 실패 : " + e.getMessage());
+        }
+
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<BaseApiDto<?>> logout(@RequestBody TokenDto tokenDto) {
+        try {
+            tokenService.logout(tokenDto);
+            return super.ok(BaseApiDto.newBaseApiDto());
+        } catch (Exception e) {
+            return super.fail(BaseApiDto.newBaseApiDto(), "9999", "로그아웃 실패 : " + e.getMessage());
         }
 
     }

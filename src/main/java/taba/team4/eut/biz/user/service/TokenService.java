@@ -1,12 +1,8 @@
 package taba.team4.eut.biz.user.service;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import taba.team4.eut.biz.user.dto.LoginResponseDto;
 import taba.team4.eut.biz.user.dto.TokenDto;
-import taba.team4.eut.biz.user.dto.UserDto;
 import taba.team4.eut.biz.user.entity.RefreshEntity;
 import taba.team4.eut.biz.user.repository.RefreshRepository;
 import taba.team4.eut.jwt.JWTUtil;
@@ -14,12 +10,12 @@ import taba.team4.eut.jwt.JWTUtil;
 import java.util.Date;
 
 @Service
-public class ReissueService {
+public class TokenService {
 
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
 
-    public ReissueService(JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+    public TokenService(JWTUtil jwtUtil, RefreshRepository refreshRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
     }
@@ -77,5 +73,36 @@ public class ReissueService {
         refreshEntity.setExpiration(date.toString());
 
         refreshRepository.save(refreshEntity);
+    }
+
+    public void logout(TokenDto tokenDto) {
+        String refresh = tokenDto.getRefreshToken();
+        // 토큰 존재 확인
+        if (refresh == null || refresh.equals("")) {
+            throw new IllegalArgumentException("리프레시 토큰이 없습니다.");
+        }
+        // 토큰 만료 확인
+        try {
+            jwtUtil.isExpired(refresh);
+        } catch (ExpiredJwtException e) {
+            throw new IllegalArgumentException("리프레시 토큰이 만료되었습니다.");
+        }
+
+        // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
+        String category = jwtUtil.getCategory(refresh);
+
+        if (!category.equals("refresh")) {
+            throw new IllegalArgumentException("유효한 토큰이 아닙니다.");
+        }
+
+        //DB에 저장되어 있는지 확인
+        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        if (!isExist) {
+            throw new IllegalArgumentException("유효한 토큰이 아닙니다.");
+        }
+
+        //로그아웃 진행
+        //Refresh 토큰 DB에서 제거
+        refreshRepository.deleteByRefresh(refresh);
     }
 }

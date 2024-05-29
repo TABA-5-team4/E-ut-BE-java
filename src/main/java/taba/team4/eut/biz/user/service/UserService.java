@@ -143,4 +143,8 @@ public class UserService {
 
         refreshRepository.save(refreshEntity);
     }
+
+    public void logout(UserDto userDto) {
+
+    }
 }
