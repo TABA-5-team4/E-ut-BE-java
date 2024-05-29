@@ -19,7 +19,7 @@ public class ChatController extends BaseApiController<BaseApiDto<?>> {
     private final ChatService chatService;
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public String chat() {
         return "chat";
     }

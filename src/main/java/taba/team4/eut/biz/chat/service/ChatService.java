@@ -20,15 +20,15 @@ public class ChatService {
     private final String BASE_UPLOAD_DIR = "chat_voice";
     private final UserRepository userRepository;
     public void stt(ChatRequestDto chatRequestDto) {
-        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
-
-        if (user.isEmpty()) {
-            throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
-        }
+//        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+//
+//        if (user.isEmpty()) {
+//            throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
+//        }
 
         LocalDate now = LocalDate.now();
         String today = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
-        String dirName = BASE_UPLOAD_DIR + "/" + user.get().getMemberId().toString() +  "/" + today;
+//        String dirName = BASE_UPLOAD_DIR + "/" + user.get().getMemberId().toString() +  "/" + today;
     }
 }
