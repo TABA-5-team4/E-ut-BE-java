@@ -9,6 +9,8 @@ import taba.team4.eut.biz.user.dto.CustomUserDetails;
 import taba.team4.eut.biz.user.entity.UserEntity;
 import taba.team4.eut.biz.user.repository.UserRepository;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -16,12 +18,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByPhone(username);
+        Optional<UserEntity> user = userRepository.findByPhone(username);
 
-        if (user != null) {
-            return new CustomUserDetails(user);
-        }
+        return user.map(CustomUserDetails::new).orElse(null);
 
-        return null;
     }
 }

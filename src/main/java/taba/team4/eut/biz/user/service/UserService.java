@@ -27,6 +27,7 @@ import taba.team4.eut.jwt.JWTUtil;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -68,8 +69,8 @@ public class UserService {
             // 자녀 회원가입
 
             // 부모 확인
-            UserEntity parent = userRepository.findByPhone(userDto.getParentPhone());
-            if (parent == null || parent.getMemberType() != 'P') {
+            Optional<UserEntity> parent = userRepository.findByPhone(userDto.getParentPhone());
+            if (parent.isEmpty() || parent.get().getMemberType() != 'P') {
                 throw new IllegalArgumentException("부모 정보가 존재하지 않습니다.");
             }
 
@@ -83,7 +84,7 @@ public class UserService {
             userRepository.save(user);
 
             // 부모-자녀 매핑
-            ParentChildMappingEntity mapping = new ParentChildMappingEntity(parent, user);
+            ParentChildMappingEntity mapping = new ParentChildMappingEntity(parent.get(), user);
             parentChildMappingRepository.save(mapping);
 
         } else {
@@ -96,8 +97,8 @@ public class UserService {
     public LoginResponseDto login(UserDto userDto) throws Exception {
         String phone = userDto.getPhone();
 
-        UserEntity user = userRepository.findByPhone(phone);
-        if (user == null) {
+        Optional<UserEntity> user = userRepository.findByPhone(phone);
+        if (user.isEmpty()) {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
 
@@ -129,7 +130,7 @@ public class UserService {
         addRefreshEntity(username, refresh);
 
 
-        return new LoginResponseDto(user, access, refresh);
+        return new LoginResponseDto(user.get(), access, refresh);
     }
     private static long thirtyDaysInMillis = 30L * 24 * 60 * 60 * 1000; // 30일을 밀리초로 변환
     private void addRefreshEntity(String username, String refresh) {

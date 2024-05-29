@@ -20,12 +20,12 @@ public class ChatController extends BaseApiController<BaseApiDto<?>> {
 
 
     @GetMapping("")
-    public String chat() {
+    public String chatP() {
         return "chat";
     }
 
     @PostMapping(path = "/stt", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<BaseApiDto<?>> stt(@ModelAttribute ChatRequestDto chatRequestDto) {
+    public ResponseEntity<BaseApiDto<?>> chatWithStt(@ModelAttribute ChatRequestDto chatRequestDto) {
         try {
             log.info("stt 요청 : {}", chatRequestDto);
             chatService.stt(chatRequestDto);
