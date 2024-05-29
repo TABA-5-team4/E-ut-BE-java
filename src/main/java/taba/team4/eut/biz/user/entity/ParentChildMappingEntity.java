@@ -18,7 +18,7 @@ public class ParentChildMappingEntity {
     private UserEntity parent;
 
     @MapsId("childId")
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "CHILD_ID")
     private UserEntity child;
 
