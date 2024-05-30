@@ -2,10 +2,7 @@ package taba.team4.eut.biz.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import taba.team4.eut.biz.chat.enums.Sender;
 import taba.team4.eut.biz.user.entity.UserEntity;
 import taba.team4.eut.common.dto.BaseEntity;
@@ -16,6 +13,7 @@ import taba.team4.eut.common.dto.BaseModel;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "CHAT")
+@Builder
 public class ChatEntity extends BaseEntity {
 
     @Id
@@ -23,12 +21,11 @@ public class ChatEntity extends BaseEntity {
     @Column(name = "CHAT_ID")
     private Long chatId;
 
-    @Column(name = "SENDER")
-    @Enumerated(EnumType.STRING)
-    private Sender sender;
+    @Column(name = "INPUT")
+    private String input;
 
-    @Column(name = "MESSAGE")
-    private String message;
+    @Column(name = "RESPONSE")
+    private String response;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference // 순환 참조 방지

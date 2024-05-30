@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import taba.team4.eut.biz.chat.dto.ChatRequestDto;
+import taba.team4.eut.biz.chat.dto.SttChatResponseDto;
 import taba.team4.eut.biz.chat.service.ChatService;
 import taba.team4.eut.common.controller.BaseApiController;
 import taba.team4.eut.common.controller.BaseApiDto;
@@ -28,8 +29,9 @@ public class ChatController extends BaseApiController<BaseApiDto<?>> {
     public ResponseEntity<BaseApiDto<?>> chatWithStt(@ModelAttribute ChatRequestDto chatRequestDto) {
         try {
             log.info("stt 요청 : {}", chatRequestDto);
-            chatService.stt(chatRequestDto);
-            return super.ok(BaseApiDto.newBaseApiDto());
+            SttChatResponseDto stt = chatService.stt(chatRequestDto);
+
+            return super.ok(new BaseApiDto<>(stt));
         } catch (Exception e) {
             return super.fail(BaseApiDto.newBaseApiDto(), "9999", "음성인식 실패 : " + e.getMessage());
         }
