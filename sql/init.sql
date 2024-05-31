@@ -53,7 +53,7 @@ CREATE TABLE `CHAT_VOICE` (
 CREATE TABLE `USER_STATISTICS` (
                                    `STAT_ID`	BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
                                    `MEMBER_ID`	BIGINT	NOT NULL,
-                                   `STAT_DATE`	DATETIME	NOT NULL,
+                                   `STAT_DATE`	DATE	NOT NULL,
                                    `SUMMARY`	TEXT	NULL,
                                    `HAPPINESS_SCORE`	DECIMAL(5, 2)	NULL,
                                    `PANIC_SCORE`	DECIMAL(5, 2)	NULL,

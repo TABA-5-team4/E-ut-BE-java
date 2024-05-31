@@ -92,6 +92,7 @@ springdoc:
     display-request-duration: true
     default-models-expand-depth: 2
     default-model-expand-depth: 2
+    path: /swagger-ui
   api-docs:
     path: /api-docs
   show-actuator: true

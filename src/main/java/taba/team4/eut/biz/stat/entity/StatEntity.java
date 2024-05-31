@@ -7,6 +7,7 @@ import taba.team4.eut.biz.user.entity.UserEntity;
 import taba.team4.eut.common.dto.BaseEntity;
 import taba.team4.eut.common.dto.BaseModel;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -27,9 +28,9 @@ public class StatEntity extends BaseEntity {
     @JoinColumn(name = "MEMBER_ID", nullable = false)
     private UserEntity user;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "STAT_DATE")
-    private LocalDateTime statDate;
+    private LocalDate statDate;
 
     @Column(name = "SUMMARY")
     private String summary;

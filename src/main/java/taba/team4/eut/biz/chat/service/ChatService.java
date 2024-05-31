@@ -111,7 +111,7 @@ public class ChatService {
             // 통계 결과 저장
             StatEntity statEntity = StatEntity.builder()
                     .user(user.get())
-                    .statDate(LocalDateTime.now())
+                    .statDate(LocalDate.now())
                     .usageTimeSecond(responseDto.getAudio_length())
                     .happinessScore(responseDto.filterByLabel("행복"))
                     .panicScore(responseDto.filterByLabel("당황"))
