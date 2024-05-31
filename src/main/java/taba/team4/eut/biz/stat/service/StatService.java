@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.stereotype.Service;
+import taba.team4.eut.biz.chat.dto.SentimentDataDto;
 import taba.team4.eut.biz.stat.dto.response.TodayStatDto;
 import taba.team4.eut.biz.stat.entity.StatEntity;
+import taba.team4.eut.biz.stat.repository.AvgStatInterface;
 import taba.team4.eut.biz.stat.repository.StatRepository;
 import taba.team4.eut.biz.user.entity.UserEntity;
 import taba.team4.eut.biz.user.repository.UserRepository;
@@ -41,16 +43,39 @@ public class StatService {
         }
         log.info("오늘의 통계 조회 성공, 통계 개수 : {}", statEntityList.get().size());
 
+        TodayStatDto todayStatDto = new TodayStatDto();
+
         // 감정 통계
-        Object[] emotionStat = statRepository.findAvgEmotionScoreByStatDate(user.get().getMemberId(), time);
-        log.info("오늘의 감정 통계 : {}", emotionStat);
-
-
+        AvgStatInterface emotionStat = statRepository.findAvgEmotionScoreByStatDate(user.get().getMemberId(), time);
+        todayStatDto.setSentimentAnalysis(getSentimentList(emotionStat));
+        todayStatDto.setTotalScreenTimeSecond(emotionStat.getUsageTimeSecond());
 
         statEntityList.get().forEach(statEntity -> {
-            log.info("오늘의 통계 : {}", statEntity);
+
+            if (statEntity.getCreatedAt().getHour() < 12) {
+                // 오전 요약
+                todayStatDto.addSummaryDay(statEntity.getSummary());
+            } else {
+                // 오후 요약
+                todayStatDto.addSummaryEvening(statEntity.getSummary());
+            }
+           todayStatDto.setDailyScreenTimeMap(statEntity);
+
         });
 
-        return new TodayStatDto();
+        return todayStatDto;
+    }
+
+    public List<SentimentDataDto> getSentimentList(AvgStatInterface emotionStat) {
+        // ObjectList to SentimentDataDtoList
+        return List.of(
+                new SentimentDataDto("행복", Math.floor(emotionStat.getHappinessScore())),
+                new SentimentDataDto("불안", Math.floor(emotionStat.getAnxietyScore())),
+                new SentimentDataDto("중립", Math.floor(emotionStat.getNeutralScore())),
+                new SentimentDataDto("당황", Math.floor(emotionStat.getPanicScore())),
+                new SentimentDataDto("분노", Math.floor(emotionStat.getAngerScore())),
+                new SentimentDataDto("슬픔", Math.floor(emotionStat.getSadnessScore())),
+                new SentimentDataDto("혐오", Math.floor(emotionStat.getDisgustScore()))
+        );
     }
 }

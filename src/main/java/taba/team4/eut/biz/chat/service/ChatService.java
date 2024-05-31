@@ -108,6 +108,7 @@ public class ChatService {
                     .fileLength(responseDto.getAudio_length())
                     .build();
             chatVoiceRepository.save(chatVoiceEntity);
+
             // 통계 결과 저장
             StatEntity statEntity = StatEntity.builder()
                     .user(user.get())

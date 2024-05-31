@@ -19,15 +19,16 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
     // 특정 날짜 감정 평균 점수 조회
     @Query(value = "" +
             "SELECT " +
-            "   AVG(happiness_score) as happinessScore, " +
-            "   AVG(panic_score) as panicScore, " +
-            "   AVG(neutral_score) as neutralScore, " +
-            "   AVG(anxiety_score) as anxietyScore, " +
-            "   AVG(anger_score) as angerScore, " +
-            "   AVG(sadness_score) as sadnessScore, " +
-            "   AVG(disgust_score) as disgustScore " +
+            "   AVG(happiness_score) * 100 as happinessScore, " +
+            "   AVG(panic_score) * 100 as panicScore, " +
+            "   AVG(neutral_score) * 100 as neutralScore, " +
+            "   AVG(anxiety_score) * 100 as anxietyScore, " +
+            "   AVG(anger_score) * 100 as angerScore, " +
+            "   AVG(sadness_score) * 100 as sadnessScore, " +
+            "   AVG(disgust_score) * 100 as disgustScore, " +
+            "   SUM(USAGE_TIME_SECOND) as usageTimeSecond " +
             "FROM USER_STATISTICS " +
             "WHERE MEMBER_ID = :memberId " +
             "AND STAT_DATE = :statDate", nativeQuery = true)
-    Object[] findAvgEmotionScoreByStatDate(@Param("memberId") Long MemberId, @Param("statDate") LocalDate date);
+    AvgStatInterface findAvgEmotionScoreByStatDate(@Param("memberId") Long MemberId, @Param("statDate") LocalDate date);
 }
