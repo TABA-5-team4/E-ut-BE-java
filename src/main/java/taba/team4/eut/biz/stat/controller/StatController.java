@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import taba.team4.eut.biz.stat.dto.response.TodayStatDto;
+import taba.team4.eut.biz.stat.dto.response.WeeklyStatDto;
 import taba.team4.eut.biz.stat.service.StatService;
 import taba.team4.eut.common.controller.BaseApiController;
 import taba.team4.eut.common.controller.BaseApiDto;
@@ -62,4 +63,16 @@ public class StatController extends BaseApiController<BaseApiDto<?>> {
             return super.fail(BaseApiDto.newBaseApiDto(), "9999", "오늘의 통계 조회 실패 : " + e.getMessage());
         }
     }
+
+    @GetMapping("/weekly")
+    public ResponseEntity<BaseApiDto<?>> weeklyStat(@RequestParam("date") String date) {
+        try {
+            WeeklyStatDto weeklyStat = statService.getWeeklyStat(date);
+            return super.ok(new BaseApiDto<>(weeklyStat));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return super.fail(BaseApiDto.newBaseApiDto(), "9999", "주간 통계 조회 실패 : " + e.getMessage());
+        }
+    }
+
 }

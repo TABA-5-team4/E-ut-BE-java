@@ -5,13 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import taba.team4.eut.biz.chat.dto.SentimentDataDto;
-import taba.team4.eut.biz.stat.dto.ScreenTimeDetailDto;
-import taba.team4.eut.biz.stat.dto.SummaryDto;
+import taba.team4.eut.biz.stat.dto.ScreenTimeDailyDto;
 import taba.team4.eut.biz.stat.entity.StatEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -22,7 +20,7 @@ public class TodayStatDto {
     List<String> summaryDay = new ArrayList<>();
     List<String> summaryEvening = new ArrayList<>();
     List<SentimentDataDto> sentimentAnalysis;
-    ScreenTimeDetailDto dailyScreenTime = new ScreenTimeDetailDto();
+    ScreenTimeDailyDto dailyScreenTime = new ScreenTimeDailyDto();
     Long totalScreenTimeSecond;
 
     public void addSummaryDay(String summary) {

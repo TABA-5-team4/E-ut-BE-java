@@ -6,6 +6,7 @@ import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import taba.team4.eut.biz.chat.dto.SentimentDataDto;
 import taba.team4.eut.biz.stat.dto.response.TodayStatDto;
+import taba.team4.eut.biz.stat.dto.response.WeeklyStatDto;
 import taba.team4.eut.biz.stat.entity.StatEntity;
 import taba.team4.eut.biz.stat.repository.AvgStatInterface;
 import taba.team4.eut.biz.stat.repository.StatRepository;
@@ -77,5 +78,35 @@ public class StatService {
                 new SentimentDataDto("슬픔", Math.floor(emotionStat.getSadnessScore())),
                 new SentimentDataDto("혐오", Math.floor(emotionStat.getDisgustScore()))
         );
+    }
+
+    public WeeklyStatDto getWeeklyStat(String date) {
+        // 사용자 정보 조회
+        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
+        }
+
+        // 주간 통계 조회
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate time = LocalDate.parse(date, formatter);
+        LocalDate startDate = time.minusDays(time.getDayOfWeek().getValue() - 1);
+        LocalDate endDate = startDate.plusDays(6);
+
+        Optional<List<StatEntity>> statEntityList = statRepository.findUserStatWeekly(user.get().getMemberId(), startDate, endDate);
+        if (statEntityList.isEmpty() || statEntityList.get().isEmpty()) {
+            log.info("주간 통계가 없습니다.");
+            throw new RuntimeException("주간 통계가 없습니다.");
+        }
+        WeeklyStatDto weeklyStatDto = new WeeklyStatDto();
+
+        // 감정 통계
+        AvgStatInterface emotionStat = statRepository.findUserStatWeeklySentiment(user.get().getMemberId(), startDate, endDate);
+
+
+
+
+
+        return weeklyStatDto;
     }
 }

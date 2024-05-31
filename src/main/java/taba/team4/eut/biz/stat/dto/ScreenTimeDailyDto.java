@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScreenTimeDetailDto {
+public class ScreenTimeDailyDto {
     private Long t0_2 = 0L;
     private Long t2_4 = 0L;
     private Long t4_6 = 0L;
