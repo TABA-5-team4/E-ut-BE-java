@@ -60,7 +60,7 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
     // values is random value
     @Query(value = "" +
             "INSERT INTO USER_STATISTICS " +
-            "(MEMBER_ID, STAT_DATE, HAPPINESS_SCORE, PANIC_SCORE, NEUTRAL_SCORE, ANXIETY_SCORE, ANGER_SCORE, SADNESS_SCORE, DISGUST_SCORE, USAGE_TIME_SECOND, SUMMARY, NEGATIVE_EXP_RATE) " +
+            "(MEMBER_ID, STAT_DATE, HAPPINESS_SCORE, PANIC_SCORE, NEUTRAL_SCORE, ANXIETY_SCORE, ANGER_SCORE, SADNESS_SCORE, DISGUST_SCORE, USAGE_TIME_SECOND, SUMMARY, NEGATIVE_EXP_RATE, CREATED_AT) " +
             "VALUES" +
             "( " +
             "    :memberId, " +
@@ -73,8 +73,14 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
             "    RAND() , " +
             "    RAND() , " +
             "    FLOOR(RAND() * 100), " +
-            "    'Random summary'," +
-            "    FLOOR(RAND() * 100) " +
+            "    :randomSummary," +
+            "    FLOOR(RAND() * 100)," +
+            "   DATE_ADD( " +
+            "        CONCAT('2024-' , :monthNum, '-01 00:00:00'), " +
+            "        INTERVAL FLOOR(RAND() * 28) DAY " +
+            "    ) + INTERVAL FLOOR(RAND() * 24) HOUR " +
+            "    + INTERVAL FLOOR(RAND() * 60) MINUTE " +
+            "    + INTERVAL FLOOR(RAND() * 60) SECOND " +
             "); ", nativeQuery = true)
-    void insertRandomStat(@Param("memberId")Long memberId, @Param("monthNum") String monthNum);
+    void insertRandomStat(@Param("memberId")Long memberId, @Param("monthNum") String monthNum, @Param("randomSummary") String randomSummary);
 }

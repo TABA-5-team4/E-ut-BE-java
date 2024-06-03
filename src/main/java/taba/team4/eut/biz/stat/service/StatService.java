@@ -13,6 +13,7 @@ import taba.team4.eut.biz.stat.dto.response.WeeklyStatDto;
 import taba.team4.eut.biz.stat.entity.StatEntity;
 import taba.team4.eut.biz.stat.repository.AvgStatInterface;
 import taba.team4.eut.biz.stat.repository.StatRepository;
+import taba.team4.eut.biz.stat.utils.Gara;
 import taba.team4.eut.biz.user.entity.UserEntity;
 import taba.team4.eut.biz.user.repository.UserRepository;
 import taba.team4.eut.common.security.SecurityUtil;
@@ -175,6 +176,7 @@ monthlyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / 30);
         }
 
         // month 에 해당하는 월의 랜덤 날짜와 랜덤 score 값을 생성
-        statRepository.insertRandomStat(user.get().getMemberId(), month);
+        Gara gara = new Gara();
+        statRepository.insertRandomStat(user.get().getMemberId(), month, gara.getSummary());
     }
 }
