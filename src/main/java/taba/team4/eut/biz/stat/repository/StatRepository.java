@@ -65,16 +65,16 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
             "( " +
             "    :memberId, " +
             "    DATE(CONCAT('2024-' , :monthNum , '-', LPAD(FLOOR(RAND() * 30) + 1, 2, '0'))), " +
-            "    RAND() , " +
-            "    RAND() , " +
-            "    RAND() , " +
-            "    RAND() , " +
-            "    RAND() , " +
-            "    RAND() , " +
-            "    RAND() , " +
+            "    :rand0 , " +
+            "    :rand1 , " +
+            "    :rand2 , " +
+            "    :rand3 , " +
+            "    :rand4 , " +
+            "    :rand5 , " +
+            "    :rand6 , " +
             "    FLOOR(RAND() * 100), " +
             "    :randomSummary," +
-            "    FLOOR(RAND() * 100)," +
+            "    :negativeExpRate," +
             "   DATE_ADD( " +
             "        CONCAT('2024-' , :monthNum, '-01 00:00:00'), " +
             "        INTERVAL FLOOR(RAND() * 28) DAY " +
@@ -82,5 +82,17 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
             "    + INTERVAL FLOOR(RAND() * 60) MINUTE " +
             "    + INTERVAL FLOOR(RAND() * 60) SECOND " +
             "); ", nativeQuery = true)
-    void insertRandomStat(@Param("memberId")Long memberId, @Param("monthNum") String monthNum, @Param("randomSummary") String randomSummary);
+    void insertRandomStat(
+            @Param("memberId")Long memberId,
+            @Param("monthNum") String monthNum,
+            @Param("randomSummary") String randomSummary,
+            @Param("rand0") Double rand0,
+            @Param("rand1") Double rand1,
+            @Param("rand2") Double rand2,
+            @Param("rand3") Double rand3,
+            @Param("rand4") Double rand4,
+            @Param("rand5") Double rand5,
+            @Param("rand6") Double rand6,
+            @Param("negativeExpRate") int negativeExpRate
+            );
 }

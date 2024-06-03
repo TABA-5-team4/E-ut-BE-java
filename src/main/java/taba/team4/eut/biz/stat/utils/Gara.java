@@ -109,4 +109,27 @@ public class Gara {
     public String getSummary() {
         return summaryList.get((int) (Math.random() * summaryList.size()));
     }
+
+    // random value generate
+    // list length is 7
+    // sum of value of list is 1
+    // values are random value
+    public List<Double> getRandomStatValue() {
+        double[] values = new double[7];
+        double sum = 0;
+        for (int i = 0; i < 7; i++) {
+            values[i] = Math.random();
+            sum += values[i];
+        }
+        for (int i = 0; i < 7; i++) {
+            values[i] /= sum;
+        }
+        return Arrays.asList(values[0], values[1], values[2], values[3], values[4], values[5], values[6]);
+    }
+
+    public int getNegativeExpRate(List<Double> list) {
+        return (int) Math.floor((list.get(3) + list.get(4) + list.get(5) + list.get(6)) * 100);
+    }
+
+
 }

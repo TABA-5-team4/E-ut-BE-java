@@ -177,6 +177,19 @@ monthlyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / 30);
 
         // month 에 해당하는 월의 랜덤 날짜와 랜덤 score 값을 생성
         Gara gara = new Gara();
-        statRepository.insertRandomStat(user.get().getMemberId(), month, gara.getSummary());
+        List<Double> rand = gara.getRandomStatValue();
+        statRepository.insertRandomStat(
+                user.get().getMemberId(),
+                month,
+                gara.getSummary(),
+                rand.get(0),
+                rand.get(1),
+                rand.get(2),
+                rand.get(3),
+                rand.get(4),
+                rand.get(5),
+                rand.get(6),
+                gara.getNegativeExpRate(rand)
+                );
     }
 }
