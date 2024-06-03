@@ -107,9 +107,9 @@ public class StatService {
         // 주간 평균 감정 통계
         AvgStatInterface emotionStatAvg = statRepository.findUserStatBetweenDatesSentiment(user.get().getMemberId(), startDate, endDate);
         weeklyStatDto.setAvgEmotion(new AverageStatDto(emotionStatAvg));
-        // 주간 평균 사용 시간 todo : 주간 평균 사용시간 계산 항상 7로 나누면 안됨
+        // 주간 평균 사용 시간
 
-        weeklyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / 7);
+        weeklyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / statEntityList.get().size());
 
         // 주간 사용 시간
         ScreenTimeWeeklyDto screenTimeWeeklyDto = new ScreenTimeWeeklyDto();
@@ -143,6 +143,7 @@ public class StatService {
             log.info("월간 통계가 없습니다.");
             throw new RuntimeException("월간 통계가 없습니다.");
         }
+        log.info("월간 통계 조회 성공, 통계 개수 : {}", statEntityList.get().size());
 
         MonthlyStatDto monthlyStatDto = new MonthlyStatDto();
 
@@ -150,8 +151,8 @@ public class StatService {
         AvgStatInterface emotionStatAvg = statRepository.findUserStatBetweenDatesSentiment(user.get().getMemberId(), startDate, endDate);
         monthlyStatDto.setAvgEmotion(new AverageStatDto(emotionStatAvg));
 
-        // 월간 평균 사용 시간 todo : 월간 평균 사용시간 계산 항상 30으로 나누면 안됨
-monthlyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / 30);
+        // 월간 평균 사용 시간
+        monthlyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / statEntityList.get().size());
 
         // 월간 사용 시간
         ScreenTimeMonthlyDto screenTimeMonthlyDto = new ScreenTimeMonthlyDto();
