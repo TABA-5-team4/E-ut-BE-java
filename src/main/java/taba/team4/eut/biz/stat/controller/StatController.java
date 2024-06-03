@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import taba.team4.eut.biz.stat.dto.response.MonthlyStatDto;
 import taba.team4.eut.biz.stat.dto.response.TodayStatDto;
 import taba.team4.eut.biz.stat.dto.response.WeeklyStatDto;
 import taba.team4.eut.biz.stat.service.StatService;
@@ -72,6 +73,17 @@ public class StatController extends BaseApiController<BaseApiDto<?>> {
         } catch (Exception e) {
             e.printStackTrace();
             return super.fail(BaseApiDto.newBaseApiDto(), "9999", "주간 통계 조회 실패 : " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/monthly")
+    public ResponseEntity<BaseApiDto<?>> monthlyStat(@RequestParam("date") String date) {
+        try {
+            MonthlyStatDto weeklyStat = statService.getMonthlyStat(date);
+            return super.ok(new BaseApiDto<>(weeklyStat));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return super.fail(BaseApiDto.newBaseApiDto(), "9999", "월간 통계 조회 실패 : " + e.getMessage());
         }
     }
 

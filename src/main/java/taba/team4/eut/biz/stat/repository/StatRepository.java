@@ -32,15 +32,15 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
             "AND STAT_DATE = :statDate", nativeQuery = true)
     AvgStatInterface findAvgEmotionScoreByStatDate(@Param("memberId") Long MemberId, @Param("statDate") LocalDate date);
 
-    // 주간 통계 조회
+    // 특정 기간 통계 데이터 조회
     @Query(value = "" +
             "SELECT * " +
             "FROM USER_STATISTICS " +
             "WHERE MEMBER_ID = :memberId " +
             "AND STAT_DATE BETWEEN :startDate AND :endDate", nativeQuery = true)
-    Optional<List<StatEntity>> findUserStatWeekly(@Param("memberId") Long MemberId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    Optional<List<StatEntity>> findUserStatBetweenDates(@Param("memberId") Long MemberId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    // 주간 감정 통계
+    // 특정 기간 감정 통계
     @Query(value = "" +
             "SELECT " +
             "   AVG(happiness_score) * 100 as happinessScore, " +
@@ -54,5 +54,5 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
             "FROM USER_STATISTICS " +
             "WHERE MEMBER_ID = :memberId " +
             "AND STAT_DATE BETWEEN :startDate AND :endDate", nativeQuery = true)
-    AvgStatInterface findUserStatWeeklySentiment(@Param("memberId") Long MemberId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    AvgStatInterface findUserStatBetweenDatesSentiment(@Param("memberId") Long MemberId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

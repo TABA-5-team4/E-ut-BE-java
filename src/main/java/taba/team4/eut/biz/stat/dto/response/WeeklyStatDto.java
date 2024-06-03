@@ -16,7 +16,7 @@ public class WeeklyStatDto {
     private AverageStatDto avgEmotion = new AverageStatDto();
     // 주간 감정 최대값
 //    private Map<String, Double> maxEmotion;
-    // 주간 감정 통계
+    // 주간 감정 통계(요일단위)
     private ScreenTimeWeeklyDto screenTimeWeekly = new ScreenTimeWeeklyDto();
     //주간 부정 표현 비율
     private ScreenTimeWeeklyDto negativeExpRate = new ScreenTimeWeeklyDto();
