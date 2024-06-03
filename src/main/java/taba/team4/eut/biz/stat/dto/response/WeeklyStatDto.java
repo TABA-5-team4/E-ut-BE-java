@@ -20,4 +20,6 @@ public class WeeklyStatDto {
     private ScreenTimeWeeklyDto screenTimeWeekly = new ScreenTimeWeeklyDto();
     //주간 부정 표현 비율
     private ScreenTimeWeeklyDto negativeExpRate = new ScreenTimeWeeklyDto();
+    // 지난 주 대비 변화량
+    private Long changeUsageTimeSecond;
 }

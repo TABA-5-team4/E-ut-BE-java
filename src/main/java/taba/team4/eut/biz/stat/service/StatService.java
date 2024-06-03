@@ -111,6 +111,18 @@ public class StatService {
 
         weeklyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / statEntityList.get().size());
 
+        // 저번주 대비 사용시간 변화량
+        LocalDate lastWeekStartDate = startDate.minusDays(7);
+        LocalDate lastWeekEndDate = endDate.minusDays(7);
+        AvgStatInterface userStatBetweenDatesSentiment = statRepository.findUserStatBetweenDatesSentiment(user.get().getMemberId(), lastWeekStartDate, lastWeekEndDate);
+        // exception
+        Long lastWeekUsageTime = 0L;
+        if (userStatBetweenDatesSentiment.getUsageTimeSecond() != null) {
+            lastWeekUsageTime = userStatBetweenDatesSentiment.getUsageTimeSecond();
+        }
+        Long changeUsageTimeSecond = emotionStatAvg.getUsageTimeSecond() - lastWeekUsageTime;
+        weeklyStatDto.setChangeUsageTimeSecond(changeUsageTimeSecond);
+
         // 주간 사용 시간
         ScreenTimeWeeklyDto screenTimeWeeklyDto = new ScreenTimeWeeklyDto();
         screenTimeWeeklyDto.addScreenTime(statEntityList.get());
@@ -153,6 +165,19 @@ public class StatService {
 
         // 월간 평균 사용 시간
         monthlyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / statEntityList.get().size());
+
+        // 저번달 대비 사용시간 변화량
+        LocalDate lastMonthStartDate = startDate.minusMonths(1);
+        LocalDate lastMonthEndDate = lastMonthStartDate.withDayOfMonth(lastMonthStartDate.lengthOfMonth());
+        AvgStatInterface userStatBetweenDatesSentiment = statRepository.findUserStatBetweenDatesSentiment(user.get().getMemberId(), lastMonthStartDate, lastMonthEndDate);
+        // exception
+        Long lastMonthUsageTime = 0L;
+        if (userStatBetweenDatesSentiment.getUsageTimeSecond() != null) {
+            lastMonthUsageTime = userStatBetweenDatesSentiment.getUsageTimeSecond();
+        }
+        Long changeUsageTimeSecond = emotionStatAvg.getUsageTimeSecond() - lastMonthUsageTime;
+        monthlyStatDto.setChangeUsageTimeSecond(changeUsageTimeSecond);
+
 
         // 월간 사용 시간
         ScreenTimeMonthlyDto screenTimeMonthlyDto = new ScreenTimeMonthlyDto();

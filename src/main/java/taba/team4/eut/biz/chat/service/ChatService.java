@@ -3,6 +3,7 @@ package taba.team4.eut.biz.chat.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,12 +70,15 @@ public class ChatService {
             if (voiceFile == null) {
                 throw new IllegalArgumentException("음성 파일이 없습니다.");
             }
-            body.add("voiceFile", Arrays.toString(voiceFile.getBytes()));
+            body.add("file", Arrays.toString(voiceFile.getBytes()));
+
+
 
             String response = webClient.post()
-                    .uri(FAST_API_URL + "/stt")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(BodyInserters.fromFormData(body))
+                    .uri(FAST_API_URL + "/process-audio")
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+//                    .body(BodyInserters.fromFormData(body))
+                    .body(BodyInserters.fromMultipartData("file", voiceFile.getResource()))
                     .retrieve() // 요청을 보내고 응답을 받아옴
                     .bodyToMono(String.class) // 응답 본문을 String 으로 받음
                     .block(); // Mono(비동기 메소드)를 동기적으로 처리

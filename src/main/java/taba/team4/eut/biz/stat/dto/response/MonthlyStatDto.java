@@ -18,4 +18,6 @@ public class MonthlyStatDto {
     private ScreenTimeMonthlyDto screenTimeMonthly = new ScreenTimeMonthlyDto();
     //월간 부정 표현 비율
     private ScreenTimeMonthlyDto negativeExpRate = new ScreenTimeMonthlyDto();
+    // 지난 달 대비 변화량
+    private Long changeUsageTimeSecond;
 }
