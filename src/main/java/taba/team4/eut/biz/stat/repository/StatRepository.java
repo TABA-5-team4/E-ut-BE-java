@@ -34,8 +34,7 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
 
     // 주간 통계 조회
     @Query(value = "" +
-            "SELECT * ," +
-
+            "SELECT * " +
             "FROM USER_STATISTICS " +
             "WHERE MEMBER_ID = :memberId " +
             "AND STAT_DATE BETWEEN :startDate AND :endDate", nativeQuery = true)

@@ -10,4 +10,6 @@ public interface AvgStatInterface {
     Double getDisgustScore();
 
     Long getUsageTimeSecond();
+
+
 }

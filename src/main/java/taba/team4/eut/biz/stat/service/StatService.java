@@ -2,9 +2,10 @@ package taba.team4.eut.biz.stat.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import taba.team4.eut.biz.chat.dto.SentimentDataDto;
+import taba.team4.eut.biz.stat.dto.AverageStatDto;
+import taba.team4.eut.biz.stat.dto.ScreenTimeWeeklyDto;
 import taba.team4.eut.biz.stat.dto.response.TodayStatDto;
 import taba.team4.eut.biz.stat.dto.response.WeeklyStatDto;
 import taba.team4.eut.biz.stat.entity.StatEntity;
@@ -100,11 +101,21 @@ public class StatService {
         }
         WeeklyStatDto weeklyStatDto = new WeeklyStatDto();
 
-        // 감정 통계
-        AvgStatInterface emotionStat = statRepository.findUserStatWeeklySentiment(user.get().getMemberId(), startDate, endDate);
+        // 주간 평균 감정 통계
+        AvgStatInterface emotionStatAvg = statRepository.findUserStatWeeklySentiment(user.get().getMemberId(), startDate, endDate);
+        weeklyStatDto.setAvgEmotion(new AverageStatDto(emotionStatAvg));
+        // 주간 평균 사용 시간
+        weeklyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / 7);
 
+        // 주간 사용 시간
+        ScreenTimeWeeklyDto screenTimeWeeklyDto = new ScreenTimeWeeklyDto();
+        screenTimeWeeklyDto.addScreenTime(statEntityList.get());
+        weeklyStatDto.setScreenTimeWeekly(screenTimeWeeklyDto);
 
-
+        // 주간 부정 표현 비율
+        ScreenTimeWeeklyDto negativeExpRate = new ScreenTimeWeeklyDto();
+        negativeExpRate.addNegativeExpRate(statEntityList.get());
+        weeklyStatDto.setNegativeExpRate(negativeExpRate);
 
 
         return weeklyStatDto;
