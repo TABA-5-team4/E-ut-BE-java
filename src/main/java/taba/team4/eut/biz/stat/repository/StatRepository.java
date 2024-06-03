@@ -55,4 +55,26 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
             "WHERE MEMBER_ID = :memberId " +
             "AND STAT_DATE BETWEEN :startDate AND :endDate", nativeQuery = true)
     AvgStatInterface findUserStatBetweenDatesSentiment(@Param("memberId") Long MemberId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    // insert query for random stat in month
+    // values is random value
+    @Query(value = "" +
+            "INSERT INTO USER_STATISTICS " +
+            "(MEMBER_ID, STAT_DATE, HAPPINESS_SCORE, PANIC_SCORE, NEUTRAL_SCORE, ANXIETY_SCORE, ANGER_SCORE, SADNESS_SCORE, DISGUST_SCORE, USAGE_TIME_SECOND, SUMMARY, NEGATIVE_EXP_RATE) " +
+            "VALUES" +
+            "( " +
+            "    :memberId, " +
+            "    DATE(CONCAT('2024-' , :monthNum , '-', LPAD(FLOOR(RAND() * 30) + 1, 2, '0'))), " +
+            "    RAND() , " +
+            "    RAND() , " +
+            "    RAND() , " +
+            "    RAND() , " +
+            "    RAND() , " +
+            "    RAND() , " +
+            "    RAND() , " +
+            "    FLOOR(RAND() * 100), " +
+            "    'Random summary'," +
+            "    FLOOR(RAND() * 100) " +
+            "); ", nativeQuery = true)
+    void insertRandomStat(@Param("memberId")Long memberId, @Param("monthNum") String monthNum);
 }

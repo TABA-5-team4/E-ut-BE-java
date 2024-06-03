@@ -165,4 +165,16 @@ monthlyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / 30);
 
         return monthlyStatDto;
     }
+
+
+    public void insertRandomStat(String month) {
+        // 사용자 정보 조회
+        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
+        }
+
+        // month 에 해당하는 월의 랜덤 날짜와 랜덤 score 값을 생성
+        statRepository.insertRandomStat(user.get().getMemberId(), month);
+    }
 }

@@ -3,10 +3,7 @@ package taba.team4.eut.biz.stat.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import taba.team4.eut.biz.stat.dto.response.MonthlyStatDto;
 import taba.team4.eut.biz.stat.dto.response.TodayStatDto;
 import taba.team4.eut.biz.stat.dto.response.WeeklyStatDto;
@@ -84,6 +81,17 @@ public class StatController extends BaseApiController<BaseApiDto<?>> {
         } catch (Exception e) {
             e.printStackTrace();
             return super.fail(BaseApiDto.newBaseApiDto(), "9999", "월간 통계 조회 실패 : " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/random")
+    public ResponseEntity<BaseApiDto<?>> randomStat(@RequestParam("month") String month) {
+        try {
+            statService.insertRandomStat(month);
+            return super.ok(BaseApiDto.newBaseApiDto());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return super.fail(BaseApiDto.newBaseApiDto(), "9999", "오늘의 통계 조회 실패 : " + e.getMessage());
         }
     }
 
