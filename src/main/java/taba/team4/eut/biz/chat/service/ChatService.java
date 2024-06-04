@@ -120,6 +120,7 @@ public class ChatService {
             StatEntity statEntity = StatEntity.builder()
                     .user(user.get())
                     .statDate(LocalDate.now())
+                    .summary(responseDto.getSummary_result())
                     .usageTimeSecond(responseDto.getAudio_length())
                     .happinessScore(responseDto.filterByLabel("행복"))
                     .panicScore(responseDto.filterByLabel("당황"))

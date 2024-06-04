@@ -13,6 +13,8 @@ public class SttChatResponseDto {
     private String gpt_response;
     private Long audio_length;
     private List<SentimentDataDto> sentiment_analysis;
+    // 대화 내용 요약
+    private String summary_result;
 
     // 라벨로 스코어 찾기 함수
     public Double filterByLabel(String label) {
