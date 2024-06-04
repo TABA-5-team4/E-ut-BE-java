@@ -16,7 +16,10 @@ import taba.team4.eut.biz.stat.repository.AvgStatInterface;
 import taba.team4.eut.biz.stat.repository.MonthlyNegativeExpInterface;
 import taba.team4.eut.biz.stat.repository.StatRepository;
 import taba.team4.eut.biz.stat.utils.Gara;
+import taba.team4.eut.biz.user.entity.ParentChildMappingEntity;
+import taba.team4.eut.biz.user.entity.ParentChildMappingId;
 import taba.team4.eut.biz.user.entity.UserEntity;
+import taba.team4.eut.biz.user.repository.ParentChildMappingRepository;
 import taba.team4.eut.biz.user.repository.UserRepository;
 import taba.team4.eut.common.security.SecurityUtil;
 
@@ -33,13 +36,22 @@ public class StatService {
 
     private final UserRepository userRepository;
     private final StatRepository statRepository;
+    private final ParentChildMappingRepository parentChildMappingRepository;
 
     public TodayStatDto getTodayStat(String date) {
         // 사용자 정보 조회
-        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
-        if (user.isEmpty()) {
+        Optional<UserEntity> child = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+        if (child.isEmpty()) {
             throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
         }
+
+        // 부모 정보 조회
+        Optional<ParentChildMappingEntity> byChild = parentChildMappingRepository.findByChild(child.get());
+        if (byChild.isEmpty()) {
+            log.info("매핑된 부모 정보가 없습니다.");
+            throw new RuntimeException("매핑된 부모 정보가 없습니다.");
+        }
+        Optional<UserEntity> user = userRepository.findById(byChild.get().getParent().getMemberId());
 
         // 오늘의 통계 조회
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -89,9 +101,21 @@ public class StatService {
 
     public WeeklyStatDto getWeeklyStat(String date) {
         // 사용자 정보 조회
-        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
-        if (user.isEmpty()) {
+        Optional<UserEntity> child = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+        if (child.isEmpty()) {
             throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
+        }
+
+        // 부모 정보 조회
+        Optional<ParentChildMappingEntity> byChild = parentChildMappingRepository.findByChild(child.get());
+        if (byChild.isEmpty()) {
+            log.info("매핑된 부모 정보가 없습니다.");
+            throw new RuntimeException("매핑된 부모 정보가 없습니다.");
+        }
+        Optional<UserEntity> user = userRepository.findById(byChild.get().getParent().getMemberId());
+        if (user.isEmpty()) {
+            log.info("사용자 정보가 없습니다.");
+            throw new RuntimeException("사용자 정보가 없습니다.");
         }
 
         // 주간 통계 조회
@@ -145,9 +169,21 @@ public class StatService {
 
     public MonthlyStatDto getMonthlyStat(String date) {
         // 사용자 정보 조회
-        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
-        if (user.isEmpty()) {
+        Optional<UserEntity> child = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+        if (child.isEmpty()) {
             throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
+        }
+
+        // 부모 정보 조회
+        Optional<ParentChildMappingEntity> byChild = parentChildMappingRepository.findByChild(child.get());
+        if (byChild.isEmpty()) {
+            log.info("매핑된 부모 정보가 없습니다.");
+            throw new RuntimeException("매핑된 부모 정보가 없습니다.");
+        }
+        Optional<UserEntity> user = userRepository.findById(byChild.get().getParent().getMemberId());
+        if (user.isEmpty()) {
+            log.info("사용자 정보가 없습니다.");
+            throw new RuntimeException("사용자 정보가 없습니다.");
         }
 
         // 월간 통계 조회
@@ -204,10 +240,24 @@ public class StatService {
     // 월간 부정 표현 비율
     public MonthlyNegativeRatioDto getMonthlyNegativeExp(int month) {
         // 사용자 정보 조회
-        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
-        if (user.isEmpty()) {
+        Optional<UserEntity> child = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+        if (child.isEmpty()) {
             throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
         }
+
+        // 부모 정보 조회
+        Optional<ParentChildMappingEntity> byChild = parentChildMappingRepository.findByChild(child.get());
+
+        if (byChild.isEmpty()) {
+            log.info("매핑된 부모 정보가 없습니다.");
+            throw new RuntimeException("매핑된 부모 정보가 없습니다.");
+        }
+        Optional<UserEntity> user = userRepository.findById(byChild.get().getParent().getMemberId());
+        if (user.isEmpty()) {
+            log.info("사용자 정보가 없습니다.");
+            throw new RuntimeException("사용자 정보가 없습니다.");
+        }
+
 
         // 입력 받은 월로 Datetime 생성
         YearMonth yearMonth = YearMonth.of(LocalDate.now().getYear(), month);
@@ -231,10 +281,18 @@ public class StatService {
     // 랜덤 통계 입력
     public void insertRandomStat(String month) {
         // 사용자 정보 조회
-        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
-        if (user.isEmpty()) {
+        Optional<UserEntity> child = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+        if (child.isEmpty()) {
             throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
         }
+
+        // 부모 정보 조회
+        Optional<ParentChildMappingEntity> byChild = parentChildMappingRepository.findByChild(child.get());
+        if (byChild.isEmpty()) {
+            log.info("매핑된 부모 정보가 없습니다.");
+            throw new RuntimeException("매핑된 부모 정보가 없습니다.");
+        }
+        Optional<UserEntity> user = userRepository.findById(byChild.get().getParent().getMemberId());
 
         // month 에 해당하는 월의 랜덤 날짜와 랜덤 score 값을 생성
         Gara gara = new Gara();
