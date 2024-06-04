@@ -283,23 +283,11 @@ public class StatService {
     // 랜덤 통계 입력
     public void insertRandomStat(String month) {
         // 사용자 정보 조회
-        Optional<UserEntity> child = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
-        if (child.isEmpty()) {
+        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+        if (user.isEmpty()) {
             throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
         }
 
-        // 부모 정보 조회
-        Optional<ParentChildMappingEntity> byChild = parentChildMappingRepository.findByChild(child.get());
-
-        if (byChild.isEmpty()) {
-            log.info("매핑된 부모 정보가 없습니다.");
-            throw new RuntimeException("매핑된 부모 정보가 없습니다.");
-        }
-        Optional<UserEntity> user = userRepository.findById(byChild.get().getParent().getMemberId());
-        if (user.isEmpty()) {
-            log.info("사용자 정보가 없습니다.");
-            throw new RuntimeException("사용자 정보가 없습니다.");
-        }
 
         // month 에 해당하는 월의 랜덤 날짜와 랜덤 score 값을 생성
         Gara gara = new Gara();
