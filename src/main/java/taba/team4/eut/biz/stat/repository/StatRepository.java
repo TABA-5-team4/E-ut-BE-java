@@ -37,7 +37,8 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
             "SELECT * " +
             "FROM USER_STATISTICS " +
             "WHERE MEMBER_ID = :memberId " +
-            "AND STAT_DATE BETWEEN :startDate AND :endDate", nativeQuery = true)
+            "AND STAT_DATE BETWEEN :startDate AND :endDate " +
+            "ORDER BY STAT_DATE ", nativeQuery = true)
     Optional<List<StatEntity>> findUserStatBetweenDates(@Param("memberId") Long MemberId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     // 특정 기간 감정 통계

@@ -121,26 +121,28 @@ public class StatService {
         // 주간 통계 조회
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate time = LocalDate.parse(date, formatter);
-        LocalDate startDate = time.minusDays(time.getDayOfWeek().getValue() - 1);
-        LocalDate endDate = startDate.plusDays(6);
+        LocalDate weekStartDate = time.minusDays(time.getDayOfWeek().getValue() - 1);
+        LocalDate weekEndDate = weekStartDate.plusDays(6);
+        LocalDate today = LocalDate.now();
+        LocalDate todayMinus6 = today.minusDays(6);
 
-        Optional<List<StatEntity>> statEntityList = statRepository.findUserStatBetweenDates(user.get().getMemberId(), startDate, endDate);
+        Optional<List<StatEntity>> statEntityList = statRepository.findUserStatBetweenDates(user.get().getMemberId(), todayMinus6, today);
         if (statEntityList.isEmpty() || statEntityList.get().isEmpty()) {
             log.info("주간 통계가 없습니다.");
             throw new RuntimeException("주간 통계가 없습니다.");
         }
         WeeklyStatDto weeklyStatDto = new WeeklyStatDto();
 
-        // 주간 평균 감정 통계
-        AvgStatInterface emotionStatAvg = statRepository.findUserStatBetweenDatesSentiment(user.get().getMemberId(), startDate, endDate);
+        // 7일간 평균 감정 통계
+        AvgStatInterface emotionStatAvg = statRepository.findUserStatBetweenDatesSentiment(user.get().getMemberId(), todayMinus6, today);
         weeklyStatDto.setAvgEmotion(new AverageStatDto(emotionStatAvg));
-        // 주간 평균 사용 시간
 
+        // 7일간 평균 사용 시간
         weeklyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / statEntityList.get().size());
 
         // 저번주 대비 사용시간 변화량
-        LocalDate lastWeekStartDate = startDate.minusDays(7);
-        LocalDate lastWeekEndDate = endDate.minusDays(7);
+        LocalDate lastWeekStartDate = todayMinus6.minusDays(7);
+        LocalDate lastWeekEndDate = today.minusDays(7);
         AvgStatInterface userStatBetweenDatesSentiment = statRepository.findUserStatBetweenDatesSentiment(user.get().getMemberId(), lastWeekStartDate, lastWeekEndDate);
         // exception
         Long lastWeekUsageTime = 0L;
@@ -150,7 +152,7 @@ public class StatService {
         Long changeUsageTimeSecond = emotionStatAvg.getUsageTimeSecond() - lastWeekUsageTime;
         weeklyStatDto.setChangeUsageTimeSecond(changeUsageTimeSecond);
 
-        // 주간 사용 시간
+        // 7일간 사용 시간
         ScreenTimeWeeklyDto screenTimeWeeklyDto = new ScreenTimeWeeklyDto();
         screenTimeWeeklyDto.addScreenTime(statEntityList.get());
         weeklyStatDto.setScreenTimeWeekly(screenTimeWeeklyDto);
