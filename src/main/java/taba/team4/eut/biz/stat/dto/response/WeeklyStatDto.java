@@ -20,6 +20,43 @@ public class WeeklyStatDto {
     private ScreenTimeWeeklyDto screenTimeWeekly = new ScreenTimeWeeklyDto();
     //주간 부정 표현 비율
     private ScreenTimeWeeklyDto negativeExpRate = new ScreenTimeWeeklyDto();
+    // 주간 부정 표현 평균
+    private Long avgNegativeExpRate;
     // 지난 주 대비 변화량
     private Long changeUsageTimeSecond;
+
+    public void setAvgNegativeExpRate() {
+       int count = 0;
+       long sum = 0L;
+
+       if (this.negativeExpRate.getMon() != 0L) {
+            count++;
+            sum += this.negativeExpRate.getMon();
+       }
+        if (this.negativeExpRate.getTue() != 0L) {
+              count++;
+              sum += this.negativeExpRate.getTue();
+        }
+        if (this.negativeExpRate.getWed() != 0L) {
+              count++;
+              sum += this.negativeExpRate.getWed();
+        }
+        if (this.negativeExpRate.getThu() != 0L) {
+              count++;
+              sum += this.negativeExpRate.getThu();
+        }
+        if (this.negativeExpRate.getFri() != 0L) {
+              count++;
+              sum += this.negativeExpRate.getFri();
+        }
+        if (this.negativeExpRate.getSat() != 0L) {
+              count++;
+              sum += this.negativeExpRate.getSat();
+        }
+        if (this.negativeExpRate.getSun() != 0L) {
+              count++;
+              sum += this.negativeExpRate.getSun();
+        }
+       this.avgNegativeExpRate = sum / count;
+    }
 }

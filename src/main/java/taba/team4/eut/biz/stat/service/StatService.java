@@ -136,6 +136,9 @@ public class StatService {
         negativeExpRate.addNegativeExpRate(statEntityList.get());
         weeklyStatDto.setNegativeExpRate(negativeExpRate);
 
+        // 주간 부정 표현 평균
+        weeklyStatDto.setAvgNegativeExpRate();
+
 
         return weeklyStatDto;
     }
@@ -192,6 +195,8 @@ public class StatService {
         negativeExpRate.addNegativeExpRate(statEntityList.get());
         monthlyStatDto.setNegativeExpRate(negativeExpRate);
 
+        // 월간 부정 표현 평균
+        monthlyStatDto.setAvgNegativeExpRate();
 
         return monthlyStatDto;
     }

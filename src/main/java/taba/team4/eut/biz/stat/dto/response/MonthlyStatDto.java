@@ -18,6 +18,31 @@ public class MonthlyStatDto {
     private ScreenTimeMonthlyDto screenTimeMonthly = new ScreenTimeMonthlyDto();
     //월간 부정 표현 비율
     private ScreenTimeMonthlyDto negativeExpRate = new ScreenTimeMonthlyDto();
+    // 월간 부정 표현 평균
+    private Long avgNegativeExpRate;
     // 지난 달 대비 변화량
     private Long changeUsageTimeSecond;
+
+    public void setAvgNegativeExpRate() {
+        int count = 0;
+        long sum = 0L;
+
+        if (this.negativeExpRate.getWeek1() != 0L) {
+            count++;
+            sum += this.negativeExpRate.getWeek1();
+        }
+        if (this.negativeExpRate.getWeek2() != 0L) {
+            count++;
+            sum += this.negativeExpRate.getWeek2();
+        }
+        if (this.negativeExpRate.getWeek3() != 0L) {
+            count++;
+            sum += this.negativeExpRate.getWeek3();
+        }
+        if (this.negativeExpRate.getWeek4() != 0L) {
+            count++;
+            sum += this.negativeExpRate.getWeek4();
+        }
+        this.avgNegativeExpRate = sum / count;
+    }
 }
