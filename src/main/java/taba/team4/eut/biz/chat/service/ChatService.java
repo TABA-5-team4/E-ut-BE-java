@@ -1,5 +1,6 @@
 package taba.team4.eut.biz.chat.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,8 @@ import taba.team4.eut.aws.s3.AwsS3Dto;
 import taba.team4.eut.aws.s3.AwsS3Service;
 import taba.team4.eut.biz.chat.dto.ChatRequestDto;
 import taba.team4.eut.biz.chat.dto.SttChatResponseDto;
+import taba.team4.eut.biz.chat.dto.TextChatDto;
+import taba.team4.eut.biz.chat.dto.TextChatResponseDto;
 import taba.team4.eut.biz.chat.entity.ChatEntity;
 import taba.team4.eut.biz.chat.entity.ChatVoiceEntity;
 import taba.team4.eut.biz.chat.repository.ChatRepository;
@@ -138,4 +141,28 @@ public class ChatService {
         }
     }
 
+    public TextChatResponseDto  text(TextChatDto textChatDto) throws JsonProcessingException {
+
+        // 사용자 정보 조회
+        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
+        }
+
+        // FastAPI 호출
+        WebClient webClient = webClientBuilder.build();
+
+        String response = webClient.post()
+                .uri(FAST_API_URL + "/chat")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(textChatDto))
+                .retrieve() // 요청을 보내고 응답을 받아옴
+                .bodyToMono(String.class) // 응답 본문을 String 으로 받음
+                .block(); // Mono(비동기 메소드)를 동기적으로 처리
+
+        log.info("FastAPI 호출 결과 : {}", response);
+
+
+        return objectMapper.readValue(response, TextChatResponseDto.class);
+    }
 }

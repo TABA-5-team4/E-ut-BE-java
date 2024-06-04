@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import taba.team4.eut.biz.chat.dto.ChatRequestDto;
 import taba.team4.eut.biz.chat.dto.SttChatResponseDto;
+import taba.team4.eut.biz.chat.dto.TextChatDto;
+import taba.team4.eut.biz.chat.dto.TextChatResponseDto;
 import taba.team4.eut.biz.chat.service.ChatService;
 import taba.team4.eut.common.controller.BaseApiController;
 import taba.team4.eut.common.controller.BaseApiDto;
@@ -34,6 +36,18 @@ public class ChatController extends BaseApiController<BaseApiDto<?>> {
             return super.ok(new BaseApiDto<>(stt));
         } catch (Exception e) {
             return super.fail(BaseApiDto.newBaseApiDto(), "9999", "음성인식 실패 : " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/text")
+    public ResponseEntity<BaseApiDto<?>> chatWithText(@RequestBody TextChatDto textChatDto) {
+        try {
+            log.info("text 요청 : {}", textChatDto);
+            TextChatResponseDto responseDto = chatService.text(textChatDto);
+
+            return super.ok(new BaseApiDto<>(responseDto));
+        } catch (Exception e) {
+            return super.fail(BaseApiDto.newBaseApiDto(), "9999", "텍스트 요청 실패 : " + e.getMessage());
         }
     }
 
