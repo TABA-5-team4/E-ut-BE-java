@@ -73,7 +73,7 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
             "    :rand4 , " +
             "    :rand5 , " +
             "    :rand6 , " +
-            "    FLOOR(RAND() * 100), " +
+            "    FLOOR(RAND() * 70), " +
             "    :randomSummary," +
             "    :negativeExpRate," +
             "   DATE_ADD( " +
