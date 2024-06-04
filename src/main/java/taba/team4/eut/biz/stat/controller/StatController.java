@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import taba.team4.eut.biz.stat.dto.response.MonthlyNegativeRatioDto;
 import taba.team4.eut.biz.stat.dto.response.MonthlyStatDto;
 import taba.team4.eut.biz.stat.dto.response.TodayStatDto;
 import taba.team4.eut.biz.stat.dto.response.WeeklyStatDto;
@@ -78,6 +79,17 @@ public class StatController extends BaseApiController<BaseApiDto<?>> {
         try {
             MonthlyStatDto weeklyStat = statService.getMonthlyStat(date);
             return super.ok(new BaseApiDto<>(weeklyStat));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return super.fail(BaseApiDto.newBaseApiDto(), "9999", "월간 통계 조회 실패 : " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/calendar")
+    public ResponseEntity<BaseApiDto<?>> calendarStat(@RequestParam("month") int month) {
+        try {
+            MonthlyNegativeRatioDto dto = statService.getMonthlyNegativeExp(month);
+            return super.ok(new BaseApiDto<>(dto));
         } catch (Exception e) {
             e.printStackTrace();
             return super.fail(BaseApiDto.newBaseApiDto(), "9999", "월간 통계 조회 실패 : " + e.getMessage());

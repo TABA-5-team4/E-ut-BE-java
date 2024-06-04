@@ -1,10 +1,9 @@
 package taba.team4.eut.biz.stat.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import taba.team4.eut.biz.stat.repository.AvgStatInterface;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -7,11 +7,13 @@ import taba.team4.eut.biz.chat.dto.SentimentDataDto;
 import taba.team4.eut.biz.stat.dto.AverageStatDto;
 import taba.team4.eut.biz.stat.dto.ScreenTimeMonthlyDto;
 import taba.team4.eut.biz.stat.dto.ScreenTimeWeeklyDto;
+import taba.team4.eut.biz.stat.dto.response.MonthlyNegativeRatioDto;
 import taba.team4.eut.biz.stat.dto.response.MonthlyStatDto;
 import taba.team4.eut.biz.stat.dto.response.TodayStatDto;
 import taba.team4.eut.biz.stat.dto.response.WeeklyStatDto;
 import taba.team4.eut.biz.stat.entity.StatEntity;
 import taba.team4.eut.biz.stat.repository.AvgStatInterface;
+import taba.team4.eut.biz.stat.repository.MonthlyNegativeExpInterface;
 import taba.team4.eut.biz.stat.repository.StatRepository;
 import taba.team4.eut.biz.stat.utils.Gara;
 import taba.team4.eut.biz.user.entity.UserEntity;
@@ -19,6 +21,7 @@ import taba.team4.eut.biz.user.repository.UserRepository;
 import taba.team4.eut.common.security.SecurityUtil;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -193,7 +196,34 @@ public class StatService {
         return monthlyStatDto;
     }
 
+    // 월간 부정 표현 비율
+    public MonthlyNegativeRatioDto getMonthlyNegativeExp(int month) {
+        // 사용자 정보 조회
+        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
+        }
 
+        // 입력 받은 월로 Datetime 생성
+        YearMonth yearMonth = YearMonth.of(LocalDate.now().getYear(), month);
+        LocalDate firstDay = yearMonth.atDay(1);
+        LocalDate lastDay = yearMonth.atEndOfMonth();
+
+        Optional<List<MonthlyNegativeExpInterface>> negativeExpRateByStatDate = statRepository.findNegativeExpRateByStatDate(user.get().getMemberId(), firstDay, lastDay);
+        if (negativeExpRateByStatDate.isEmpty() || negativeExpRateByStatDate.get().isEmpty()) {
+            log.info("월간 부정 표현 비율이 없습니다.");
+            throw new RuntimeException("월간 부정 표현 비율이 없습니다.");
+        }
+
+        MonthlyNegativeRatioDto monthlyNegativeRatioDto = new MonthlyNegativeRatioDto();
+        negativeExpRateByStatDate.get().forEach(monthlyNegativeRatioDto::addDailyNegativityRatio);
+
+        return monthlyNegativeRatioDto;
+
+    }
+
+
+    // 랜덤 통계 입력
     public void insertRandomStat(String month) {
         // 사용자 정보 조회
         Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);

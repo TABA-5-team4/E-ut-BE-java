@@ -95,4 +95,16 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
             @Param("rand6") Double rand6,
             @Param("negativeExpRate") int negativeExpRate
             );
+
+    // 특정 한 달 동안 모든 날의 부정 표현 비율 조회
+    @Query(value = "" +
+            "SELECT " +
+            "   STAT_DATE as statDate, " +
+            "   SUM(NEGATIVE_EXP_RATE) / COUNT(*) as avgNegativeExpRate " +
+            "FROM USER_STATISTICS " +
+            "WHERE MEMBER_ID = :memberId " +
+            "AND STAT_DATE BETWEEN :startDate AND :endDate " +
+            "GROUP BY STAT_DATE " +
+            "ORDER BY STAT_DATE ", nativeQuery = true)
+    Optional<List<MonthlyNegativeExpInterface>> findNegativeExpRateByStatDate(@Param("memberId") Long MemberId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }
