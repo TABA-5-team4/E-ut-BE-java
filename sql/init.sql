@@ -6,6 +6,7 @@ CREATE TABLE `MEMBER` (
                           `ROLE`	VARCHAR(255)	NOT NULL,
                           `MEMBER_TYPE`	VARCHAR(1)	NOT NULL	COMMENT 'parent: P, child: C',
                           `EMAIL`	VARCHAR(255)	NULL	COMMENT '부모는 입력 X',
+                          `FCM_TOKEN` VARCHAR(255) NULL,
                           `CREATED_AT`	DATETIME	NOT NULL	DEFAULT current_timestamp(),
                           `UPDATED_AT`	DATETIME	NULL
 );

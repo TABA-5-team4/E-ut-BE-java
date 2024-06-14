@@ -1,9 +1,13 @@
 package taba.team4.eut.biz.user.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.auth.oauth2.GoogleCredentials;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
@@ -11,23 +15,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import taba.team4.eut.biz.user.dto.CustomUserDetails;
-import taba.team4.eut.biz.user.dto.LoginResponseDto;
-import taba.team4.eut.biz.user.dto.UserDto;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import taba.team4.eut.biz.user.dto.*;
 import taba.team4.eut.biz.user.entity.ParentChildMappingEntity;
 import taba.team4.eut.biz.user.entity.RefreshEntity;
 import taba.team4.eut.biz.user.entity.UserEntity;
 import taba.team4.eut.biz.user.repository.ParentChildMappingRepository;
 import taba.team4.eut.biz.user.repository.RefreshRepository;
 import taba.team4.eut.biz.user.repository.UserRepository;
-import taba.team4.eut.common.code.ResultCode;
-import taba.team4.eut.common.exception.BizException;
+import taba.team4.eut.common.security.SecurityUtil;
 import taba.team4.eut.jwt.JWTUtil;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -39,6 +40,7 @@ public class UserService {
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     private final ParentChildMappingRepository parentChildMappingRepository;
+    private final WebClient.Builder webClientBuilder;
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
@@ -148,4 +150,73 @@ public class UserService {
     public void logout(UserDto userDto) {
 
     }
+
+    public void registerToken(String token) {
+
+        // 사용자 정보 조회
+        Optional<UserEntity> user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findByPhone);
+
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
+        }
+        UserEntity userEntity = user.get();
+        userEntity.setFcmToken(token);
+        // 푸시 토큰 저장
+        userRepository.save(userEntity);
+    }
+
+    public void sendPush(Long id, PushDTO dto) throws IOException {
+        // 사용자 정보 조회
+        Optional<UserEntity> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("사용자 정보를 찾을 수 없습니다.");
+        }
+        String token = user.get().getFcmToken();
+        if (token == null) {
+            throw new IllegalArgumentException("푸시 토큰이 없습니다.");
+        }
+        log.info("token : {}", token);
+        FcmMessageDto message = makeMessage(dto, token);
+
+        // 푸시 전송
+        WebClient webClient = webClientBuilder.build();
+        String response =webClient.post()
+                .uri("https://fcm.googleapis.com/v1/projects/taba-app-proj/messages:send")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + getAccessToken())
+                .body(BodyInserters.fromValue(message))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        log.info(response);
+
+    }
+
+    private String getAccessToken() throws IOException {
+        String firebaseConfigPath = "firebase/taba-app-proj-firebase-adminsdk-qjj32-6341da6b21.json";
+
+        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
+                .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
+
+        googleCredentials.refreshIfExpired();
+        return googleCredentials.getAccessToken().getTokenValue();
+    }
+
+    private FcmMessageDto makeMessage(PushDTO fcmSendDto, String token) throws JsonProcessingException {
+
+        ObjectMapper om = new ObjectMapper();
+//        FcmMessageDto fcmMessageDto =
+                return FcmMessageDto.builder()
+                .message(FcmMessageDto.Message.builder()
+                        .token(token)
+                        .notification(FcmMessageDto.Notification.builder()
+                                .title(fcmSendDto.getTitle())
+                                .body(fcmSendDto.getMessage())
+
+                                .build()
+                        ).build()).build();
+
+//        return om.writeValueAsString(fcmMessageDto);
+    }
+
 }

@@ -61,6 +61,10 @@ dependencies {
 	// apache tika
 //	implementation 'org.apache.tika:tika-core:1.28.2'
 	implementation 'commons-io:commons-io:2.11.0'
+
+	// Google Firebase Admin
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.16.1'     // Jackson Data Bind
 }
 
 tasks.named('test') {

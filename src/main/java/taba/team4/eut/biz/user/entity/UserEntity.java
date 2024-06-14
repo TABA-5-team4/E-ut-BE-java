@@ -40,6 +40,9 @@ public class UserEntity extends BaseEntity {
     @Column(name = "ROLE")
     private String role;
 
+    @Column(name = "FCM_TOKEN")
+    private String fcmToken;
+
     @ManyToMany
     @JoinTable(
             name = "PARENT_CHILD_MAPPING",
