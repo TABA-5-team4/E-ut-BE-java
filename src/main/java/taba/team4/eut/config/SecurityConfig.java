@@ -98,7 +98,7 @@ public class SecurityConfig {
                                 "/api/v1/",
                                 "/api/v1/join",
                                 "/api/v1/reissue",
-                                "/api/v1/push/send/**").permitAll()
+                                "/api/v1/push/**").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
