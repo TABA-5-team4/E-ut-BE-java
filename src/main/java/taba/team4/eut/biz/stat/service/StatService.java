@@ -138,7 +138,7 @@ public class StatService {
         weeklyStatDto.setAvgEmotion(new AverageStatDto(emotionStatAvg));
 
         // 7일간 평균 사용 시간
-        weeklyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / statEntityList.get().size());
+        weeklyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / 7);
 
         // 저번주 대비 사용시간 변화량
         LocalDate lastWeekStartDate = todayMinus6.minusDays(7);
@@ -208,7 +208,7 @@ public class StatService {
         monthlyStatDto.setAvgEmotion(new AverageStatDto(emotionStatAvg));
 
         // 월간 평균 사용 시간
-        monthlyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / statEntityList.get().size());
+        monthlyStatDto.setAvgUsageTimeSecond(emotionStatAvg.getUsageTimeSecond() / 30);
 
         // 저번달 대비 사용시간 변화량
         LocalDate lastMonthStartDate = startDate.minusMonths(1);
