@@ -72,6 +72,11 @@ public class StatService {
 
         statEntityList.get().forEach(statEntity -> {
 
+            // statEntity.getSummary() == null 이면 반복
+            if (statEntity.getSummary() == null) {
+                return;
+            }
+
             if (statEntity.getCreatedAt().getHour() < 12) {
                 // 오전 요약
                 todayStatDto.addSummaryDay(statEntity.getSummary());
