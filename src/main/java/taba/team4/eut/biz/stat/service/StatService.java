@@ -71,6 +71,8 @@ public class StatService {
         todayStatDto.setTotalScreenTimeSecond(emotionStat.getUsageTimeSecond());
 
         statEntityList.get().forEach(statEntity -> {
+            // 시간 누적
+            todayStatDto.setDailyScreenTimeMap(statEntity);
 
             // statEntity.getSummary() == null 이면 반복
             if (statEntity.getSummary() == null) {
@@ -84,7 +86,7 @@ public class StatService {
                 // 오후 요약
                 todayStatDto.addSummaryEvening(statEntity.getSummary());
             }
-           todayStatDto.setDailyScreenTimeMap(statEntity);
+
 
         });
 
