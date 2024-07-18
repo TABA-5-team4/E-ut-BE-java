@@ -69,3 +69,14 @@ CREATE TABLE `USER_STATISTICS` (
                                    `UPDATED_AT`	DATETIME	NULL,
                                    FOREIGN KEY (`MEMBER_ID`) REFERENCES `MEMBER`(`MEMBER_ID`)
 );
+
+-- 캐릭터 --
+CREATE TABLE `CHARACTER_PROFILE` (
+                             `CHARACTER_ID`	BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY 	COMMENT '캐릭터 ID',
+                             `MEMBER_ID`	BIGINT	NOT NULL	COMMENT '유저 ID',
+                             `CHARACTER_NAME`	VARCHAR(255)	NOT NULL	COMMENT '캐릭터이름',
+                             `VOICE_ID`	VARCHAR(255)	NOT NULL	COMMENT 'elevenLabs voice ID',
+                             `CREATED_AT`	DATETIME	NOT NULL	DEFAULT current_timestamp(),
+                             `UPDATED_AT`	DATETIME	NULL,
+                             FOREIGN KEY (`MEMBER_ID`) REFERENCES `MEMBER`(`MEMBER_ID`)
+);

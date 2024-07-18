@@ -128,11 +128,16 @@ public class StatService {
         // 주간 통계 조회
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate time = LocalDate.parse(date, formatter);
+        // 이번주 월요일
         LocalDate weekStartDate = time.minusDays(time.getDayOfWeek().getValue() - 1);
+        //이번주 토요일
         LocalDate weekEndDate = weekStartDate.plusDays(6);
+        // 오늘
         LocalDate today = LocalDate.now();
+        // 오늘로부터 일주일 전
         LocalDate todayMinus6 = today.minusDays(6);
 
+        // 그래프 표현을 위한 7일간까지 통계
         Optional<List<StatEntity>> statEntityList = statRepository.findUserStatBetweenDates(user.get().getMemberId(), todayMinus6, today);
         if (statEntityList.isEmpty() || statEntityList.get().isEmpty()) {
             log.info("주간 통계가 없습니다.");
