@@ -40,4 +40,26 @@ public class CharacterController extends BaseApiController<BaseApiDto<?>> {
         }
     }
 
+    @PutMapping(path = "/{characterId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<BaseApiDto<?>> updateCharacter(@ModelAttribute CharacterRequestDTO dto, @PathVariable("characterId") Long characterId ) {
+        try {
+            log.info("캐릭터 수정 요청 : {}", dto);
+            return super.ok(new BaseApiDto<>(characterService.updateCharacter(dto, characterId)));
+        } catch (Exception e) {
+            return super.fail(BaseApiDto.newBaseApiDto(), "9999", "캐릭터 수정 실패 : " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping(path = "/{characterId}")
+    public ResponseEntity<BaseApiDto<?>> deleteCharacter(@PathVariable("characterId") Long characterId) {
+        try {
+            log.info("캐릭터 삭제 요청 : {}", characterId);
+            characterService.deleteCharacter(characterId);
+            return super.ok(BaseApiDto.newBaseApiDto());
+        } catch (Exception e) {
+            return super.fail(BaseApiDto.newBaseApiDto(), "9999", "캐릭터 삭제 실패 : " + e.getMessage());
+        }
+    }
+
+
 }
