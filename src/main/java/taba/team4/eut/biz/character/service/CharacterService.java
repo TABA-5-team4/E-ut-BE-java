@@ -81,6 +81,7 @@ public class CharacterService {
                 characterDTOList.add(CharacterDTO.builder()
                         .characterId(entity.getCharacterId())
                         .memberId(entity.getUser().getMemberId())
+                        .characterCode(entity.getCharacterCode())
                         .characterName(entity.getCharacterName())
                         .voiceId(entity.getVoiceId())
                         .build());
