@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @ToString
 public class CharacterRequestDTO {
     private Long characterId;
+    private String characterCode;
     private String characterName;
     private MultipartFile voiceFile;
 }

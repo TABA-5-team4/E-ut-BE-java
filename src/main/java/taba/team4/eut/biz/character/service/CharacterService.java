@@ -62,6 +62,7 @@ public class CharacterService {
                 .characterId(null)
                 .memberId(user.get().getMemberId())
                 .characterName("영수")
+                .characterCode("boy")
                 .voiceId("pNInz6obpgDQGcFmaJgB") // elevenLabs Adam voice ID
                 .build());
 
@@ -69,6 +70,7 @@ public class CharacterService {
                 .characterId(null)
                 .memberId(user.get().getMemberId())
                 .characterName("순옥")
+                .characterCode("girl")
                 .voiceId("MF3mGyEYCl7XYWbV9V6O") // elevenLabs Elli voice ID
                 .build());
 
@@ -133,6 +135,7 @@ public class CharacterService {
                     .user(user.get())
                     .characterName(requestDTO.getCharacterName())
 //                    .voiceId(voiceId)
+                    .characterCode(requestDTO.getCharacterCode())
                     .voiceId("ErXwobaYiN019PkySvjV") // 임시 생성 antoni voice ID
                     .build();
 
@@ -206,6 +209,7 @@ public class CharacterService {
                     .user(user.get())
                     .characterName(requestDTO.getCharacterName())
 //                    .voiceId(characterEntity.getVoiceId())
+                    .characterCode(requestDTO.getCharacterCode())
                     .voiceId("ErXwobaYiN019PkySvjV") // 임시 생성 antoni voice ID
                     .build();
 
