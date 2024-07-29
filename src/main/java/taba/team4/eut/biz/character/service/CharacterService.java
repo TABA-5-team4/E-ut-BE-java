@@ -145,6 +145,7 @@ public class CharacterService {
             return CharacterDTO.builder()
                     .characterId(savedEntity.getCharacterId())
                     .memberId(savedEntity.getUser().getMemberId())
+                    .characterCode(savedEntity.getCharacterCode())
                     .characterName(savedEntity.getCharacterName())
                     .voiceId(savedEntity.getVoiceId())
                     .build();
