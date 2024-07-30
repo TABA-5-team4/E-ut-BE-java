@@ -105,6 +105,10 @@ public class CharacterService {
             throw new IllegalArgumentException("캐릭터 이름 또는 음성 파일이 없습니다.");
         }
 
+        if (requestDTO.getCharacterCode() == null) {
+            throw new IllegalArgumentException("캐릭터 코드가 없습니다.");
+        }
+
         try {
             // elevenLabs 등록하기 API 호출
 //            WebClient webClient = webClientBuilder.build();
@@ -170,6 +174,10 @@ public class CharacterService {
 
         if (requestDTO.getCharacterName() == null) {
             throw new IllegalArgumentException("캐릭터 이름을 입력해주세요");
+        }
+
+        if (requestDTO.getCharacterCode() == null) {
+            throw new IllegalArgumentException("캐릭터 코드를 입력해주세요");
         }
 
         CharacterEntity characterEntity = characterRepository.findById(characterId)
