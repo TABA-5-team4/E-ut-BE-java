@@ -33,7 +33,7 @@ import java.util.Optional;
 public class CharacterService {
 
     private static final String ELEVEN_LABS_API_BASE = "https://api.elevenlabs.io";
-    private static final String XI_API_KEY = "cef4d9cb6ac0ca3bf613183df847472c";
+    private static final String XI_API_KEY = "sk_d29ccae02982c4176eaa2bbe63b5e6d783fc771b042f790f";
 
     private final CharacterRepository characterRepository;
     private final UserRepository userRepository;
@@ -111,37 +111,37 @@ public class CharacterService {
 
         try {
             // elevenLabs 등록하기 API 호출
-//            WebClient webClient = webClientBuilder.build();
-//
-//
-//            MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
-//            formData.add("name", requestDTO.getCharacterName());
-//            formData.add("files", requestDTO.getVoiceFile().getResource());
-//            formData.add("description", user.get().getMemberId() + "_" + requestDTO.getCharacterName());
+            WebClient webClient = webClientBuilder.build();
+
+
+            MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
+            formData.add("name", requestDTO.getCharacterName());
+            formData.add("files", requestDTO.getVoiceFile().getResource());
+            formData.add("description", user.get().getMemberId() + "_" + requestDTO.getCharacterName());
 //            formData.add("labels", "labels");
 
-//            String response = webClient.post()
-//                    .uri("/v1/voices/add")
-//                    .contentType(MediaType.MULTIPART_FORM_DATA)
-//                    .header("xi-api-key", XI_API_KEY)
-//                    .body(BodyInserters.fromMultipartData(formData))
-//                    .retrieve()
-//                    .onStatus(HttpStatusCode::isError, clientResponse ->
-//                            clientResponse.bodyToMono(String.class)
-//                                    .flatMap(errorBody -> Mono.error(new RuntimeException("API call failed: " + errorBody)))
-//                    )
-//                    .bodyToMono(String.class)
-//                    .block();
-//            log.info("elevenLabs 등록하기 API 호출 결과 : {}", response);
-            // 응답 매핑
-//            String voiceId = objectMapper.readValue(response, Map.class).get("voice_id").toString();
+            String response = webClient.post()
+                    .uri("/v1/voices/add")
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .header("xi-api-key", XI_API_KEY)
+                    .body(BodyInserters.fromMultipartData(formData))
+                    .retrieve()
+                    .onStatus(HttpStatusCode::isError, clientResponse ->
+                            clientResponse.bodyToMono(String.class)
+                                    .flatMap(errorBody -> Mono.error(new RuntimeException("API call failed: " + errorBody)))
+                    )
+                    .bodyToMono(String.class)
+                    .block();
+            log.info("elevenLabs 등록하기 API 호출 결과 : {}", response);
+//             응답 매핑
+            String voiceId = objectMapper.readValue(response, Map.class).get("voice_id").toString();
 
             CharacterEntity entity = CharacterEntity.builder()
                     .user(user.get())
                     .characterName(requestDTO.getCharacterName())
 //                    .voiceId(voiceId)
                     .characterCode(requestDTO.getCharacterCode())
-                    .voiceId("ErXwobaYiN019PkySvjV") // 임시 생성 antoni voice ID
+                    .voiceId(voiceId)
                     .build();
 
             CharacterEntity savedEntity = characterRepository.save(entity);
@@ -185,33 +185,33 @@ public class CharacterService {
 
         try {
             // elevenLabs 수정하기 API 호출
-//            WebClient webClient = webClientBuilder.build();
-//
-//
-//            MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
-//            formData.add("name", requestDTO.getCharacterName());
+            WebClient webClient = webClientBuilder.build();
 
-//            if (!requestDTO.getVoiceFile().isEmpty()) {
-//                formData.add("files", requestDTO.getVoiceFile().getResource());
-//            }
 
-//            formData.add("description", user.get().getMemberId() + "_" + requestDTO.getCharacterName());
-//            formData.add("labels", "labels");
+            MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
+            formData.add("name", requestDTO.getCharacterName());
 
-//            String response = webClient.post()
-//                    .uri("/v1/voices/" + characterEntity.getVoiceId() + "/edit")
-//                    .contentType(MediaType.MULTIPART_FORM_DATA)
-//                    .header("xi-api-key", XI_API_KEY)
-//                    .body(BodyInserters.fromMultipartData(formData))
-//                    .retrieve()
-//                    .onStatus(HttpStatusCode::isError, clientResponse ->
-//                            clientResponse.bodyToMono(String.class)
-//                                    .flatMap(errorBody -> Mono.error(new RuntimeException("API call failed: " + errorBody)))
-//                    )
-//                    .bodyToMono(String.class)
-//                    .block();
-//            log.info("elevenLabs 등록하기 API 호출 결과 : {}", response);
-            // 응답 매핑
+            if (!requestDTO.getVoiceFile().isEmpty()) {
+                formData.add("files", requestDTO.getVoiceFile().getResource());
+            }
+
+            formData.add("description", user.get().getMemberId() + "_" + requestDTO.getCharacterName());
+//            formData.add("labels", "labels"); // 라벨 떼
+
+            String response = webClient.post()
+                    .uri("/v1/voices/" + characterEntity.getVoiceId() + "/edit")
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .header("xi-api-key", XI_API_KEY)
+                    .body(BodyInserters.fromMultipartData(formData))
+                    .retrieve()
+                    .onStatus(HttpStatusCode::isError, clientResponse ->
+                            clientResponse.bodyToMono(String.class)
+                                    .flatMap(errorBody -> Mono.error(new RuntimeException("API call failed: " + errorBody)))
+                    )
+                    .bodyToMono(String.class)
+                    .block();
+            log.info("elevenLabs 수정하기 API 호출 결과 : {}", response);
+//             응답 매핑
 //            String voiceId = objectMapper.readValue(response, Map.class).get("voice_id").toString();
 
             CharacterEntity entity = CharacterEntity.builder()
@@ -220,7 +220,7 @@ public class CharacterService {
                     .characterName(requestDTO.getCharacterName())
 //                    .voiceId(characterEntity.getVoiceId())
                     .characterCode(requestDTO.getCharacterCode())
-                    .voiceId("ErXwobaYiN019PkySvjV") // 임시 생성 antoni voice ID
+                    .voiceId(characterEntity.getVoiceId())
                     .build();
 
             CharacterEntity savedEntity = characterRepository.save(entity);
@@ -254,20 +254,20 @@ public class CharacterService {
 
         try {
             // elevenLabs 삭제하기 API 호출
-//            WebClient webClient = webClientBuilder.build();
-//
-//            String response = webClient.delete()
-//                    .uri("/v1/voices/" + characterEntity.getVoiceId())
-//                    .header("xi-api-key", XI_API_KEY)
-//                    .retrieve()
-//                    .onStatus(HttpStatusCode::isError, clientResponse ->
-//                            clientResponse.bodyToMono(String.class)
-//                                    .flatMap(errorBody -> Mono.error(new RuntimeException("API call failed: " + errorBody)))
-//                    )
-//                    .bodyToMono(String.class)
-//                    .block();
-//            log.info("elevenLabs 등록하기 API 호출 결과 : {}", response);
-            // 응답 매핑
+            WebClient webClient = webClientBuilder.build();
+
+            String response = webClient.delete()
+                    .uri("/v1/voices/" + characterEntity.getVoiceId())
+                    .header("xi-api-key", XI_API_KEY)
+                    .retrieve()
+                    .onStatus(HttpStatusCode::isError, clientResponse ->
+                            clientResponse.bodyToMono(String.class)
+                                    .flatMap(errorBody -> Mono.error(new RuntimeException("API call failed: " + errorBody)))
+                    )
+                    .bodyToMono(String.class)
+                    .block();
+            log.info("elevenLabs 삭제하기 API 호출 결과 : {}", response);
+//             응답 매핑
 //            String voiceId = objectMapper.readValue(response, Map.class).get("voice_id").toString();
 
             characterRepository.delete(characterEntity);
